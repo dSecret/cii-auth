@@ -1,0 +1,17 @@
+{
+  "name": "cii-auth",
+  "version": "1.0.0",
+  "description": "Back end for authorisation of CII users",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dSecret",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "passport": "^0.4.0",
+    "passport-google-oauth20": "^1.0.0"
+  }
+}
