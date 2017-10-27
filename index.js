@@ -1,22 +1,45 @@
 const express= require('express')
 const passport =require('passport')
 const googleStrategy =require('passport-google-oauth20')
+const mongoose = require('mongoose');
+const User = require('./models/user-model');
 
-
-
+const dbURI='mongodb://dDark:i1i2t3i1@ds137435.mlab.com:37435/cii-user'
 const app=express()
+
+mongoose.connect(dbURI, () => {
+    console.log('connected to mongodb');
+});
 
 passport.use(
 	new googleStrategy({
 	// options for stategy
 		callbackURL:'/auth/google/redirect',
-		clientID:'446286956044-pu15fdv4s6e31bpku62a0p79at34rnt9.apps.googleusercontent.com',
-		clientSecret:'ACGx5ksvllE4edxiDxz1VNto'
+		clientID:'446286956044-kh8gqp1me1fks52ovg3pp373mt44juum.apps.googleusercontent.com',
+		clientSecret:'DtozyJ1pp44qkd622z682N4G'
 	},(accessToken,refreshToken,profile,done)=>{
-			
+                // return done(null,profile)
+			 
 				// passport callback function
-				return done(null, profile);
-	})
+        User.findOne({googleId: profile.id}).then((currentUser) => {
+            if(currentUser){
+                // already have this user
+                console.log('user is: ', currentUser);
+                return done(null,profile)
+                // do something
+            } else {
+                // if not, create user in our db
+                new User({
+                    googleId: profile.id,
+                    username: profile.displayName
+                }).save().then((newUser) => {
+                    console.log('created new user: ', newUser);
+                    // do something
+                    return done(null,profile)
+                });
+            }
+        });
+		})
 )
 
 
